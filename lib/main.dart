@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:smit_task_todo_app/splash_screen.dart';
+
+import 'splash_screen.dart';
+import 'main_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (context, child) {
         return MaterialApp(
-          home: SplashScreen(),
+          home: MainScreen(),
         );
       },
     );
