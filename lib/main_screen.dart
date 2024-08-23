@@ -30,12 +30,40 @@ class _MainScreenState extends State<MainScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('New To-do'),
-                        IconButton(onPressed: () {}, icon: Icon(Icons.close))
+                        Text(
+                          'New To-do',
+                          style: TextStyle(fontSize: 15.sp),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            size: 25.r,
+                          ),
+                        )
                       ],
                     ),
                     TextField(
-                      decoration: InputDecoration(),
+                      style: TextStyle(fontSize: 10.sp),
+                      maxLines: null,
+                      decoration: InputDecoration(
+                          hintText: 'Add a new To-do',
+                          hintStyle:
+                              TextStyle(color: Colors.black12, fontSize: 10.sp),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                              borderSide: BorderSide.none),
+                          fillColor: Colors.black12,
+                          filled: true),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text('Save'),
+                      ),
                     ),
                   ],
                 ),
