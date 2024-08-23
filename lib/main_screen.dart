@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -11,6 +12,44 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool checkboxBool = true;
+  List<String> allToDo = [];
+
+  final TextEditingController newToDoController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadToDo();
+  }
+
+  Future<void> loadToDo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      allToDo = prefs.getStringList('savedToDo') ?? [];
+    });
+  }
+
+  Future<void> saveToDo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('savedToDo', allToDo);
+  }
+
+  void addNewToDo(String toDo) {
+    if (toDo.isNotEmpty) {
+      setState(() {
+        allToDo.add(toDo);
+      });
+    }
+    saveToDo();
+    newToDoController.clear();
+  }
+
+  void removeToDo(int index) {
+    setState(() {
+      allToDo.removeAt(index);
+    });
+    saveToDo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +85,7 @@ class _MainScreenState extends State<MainScreen> {
                       ],
                     ),
                     TextField(
+                      controller: newToDoController,
                       style: TextStyle(fontSize: 10.sp),
                       maxLines: null,
                       decoration: InputDecoration(
@@ -61,7 +101,10 @@ class _MainScreenState extends State<MainScreen> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          addNewToDo(newToDoController.text);
+                          Navigator.pop(context);
+                        },
                         child: Text('Save'),
                       ),
                     ),
@@ -73,36 +116,39 @@ class _MainScreenState extends State<MainScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(10.r)),
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: checkboxBool,
-                      onChanged: (value) {
-                        setState(
-                          () {
-                            checkboxBool = value!;
+      body: ListView.builder(
+          itemCount: allToDo.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 5.h),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(10.r)),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: checkboxBool,
+                          onChanged: (value) {
+                            setState(
+                              () {
+                                checkboxBool = value!;
+                              },
+                            );
                           },
-                        );
-                      },
+                        ),
+                        Text(allToDo[index]),
+                      ],
                     ),
-                    Text('container'),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 }
