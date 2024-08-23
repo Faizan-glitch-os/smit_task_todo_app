@@ -75,6 +75,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         IconButton(
                           onPressed: () {
+                            newToDoController.clear();
                             Navigator.pop(context);
                           },
                           icon: Icon(
@@ -89,6 +90,15 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(fontSize: 10.sp),
                       maxLines: null,
                       decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              newToDoController.clear();
+                            },
+                            icon: Icon(
+                              Icons.clear,
+                              size: 20.r,
+                            ),
+                          ),
                           hintText: 'Add a new To-do',
                           hintStyle:
                               TextStyle(color: Colors.black12, fontSize: 10.sp),
@@ -102,8 +112,11 @@ class _MainScreenState extends State<MainScreen> {
                       alignment: Alignment.bottomRight,
                       child: TextButton(
                         onPressed: () {
-                          addNewToDo(newToDoController.text);
-                          Navigator.pop(context);
+                          if (newToDoController.text.isNotEmpty) {
+                            addNewToDo(newToDoController.text);
+                            newToDoController.clear();
+                            Navigator.pop(context);
+                          } else {}
                         },
                         child: Text('Save'),
                       ),
@@ -116,39 +129,47 @@ class _MainScreenState extends State<MainScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: ListView.builder(
-          itemCount: allToDo.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 5.h),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(10.r)),
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: checkboxBool,
-                          onChanged: (value) {
-                            setState(
-                              () {
-                                checkboxBool = value!;
+      body: allToDo.isNotEmpty
+          ? ListView.builder(
+              itemCount: allToDo.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.h),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(10.r)),
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: checkboxBool,
+                              onChanged: (value) {
+                                setState(
+                                  () {
+                                    checkboxBool = value!;
+                                  },
+                                );
                               },
-                            );
-                          },
+                            ),
+                            Text(allToDo[index]),
+                          ],
                         ),
-                        Text(allToDo[index]),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                );
+              })
+          : Center(
+              child: Text(
+                textAlign: TextAlign.center,
+                'No To-do added, kindly add one',
+                style: TextStyle(fontSize: 20.sp),
               ),
-            );
-          }),
+            ),
     );
   }
 }
