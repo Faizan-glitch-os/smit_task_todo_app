@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "975169574140",
+    "project_id": "smit-todo-eb644",
+    "storage_bucket": "smit-todo-eb644.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975169574140:android:f3e97da34b463a42d03379",
+        "android_client_info": {
+          "package_name": "com.example.smit_task_todo_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7W4-8maXmtKA0nlm_Ra2zKuCuMLHbqXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

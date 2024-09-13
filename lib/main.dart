@@ -1,23 +1,34 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:smit_task_todo_app/auth/signIn_screen.dart';
 
-import 'splash_screen.dart';
-import 'main_screen.dart';
+import 'auth/signUp_screen.dart';
+import 'ui/splash_screen.dart';
+import 'ui/main_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (context, child) {
         return MaterialApp(
-          home: MainScreen(),
+          home: MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.noScaling),
+              child: auth.currentUser != null ? MainScreen() : SignUpScreen()),
         );
       },
     );
