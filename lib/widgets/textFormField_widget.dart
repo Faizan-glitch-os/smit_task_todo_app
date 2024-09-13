@@ -10,7 +10,8 @@ class TextFormFieldWidget extends StatelessWidget {
       this.keyboardType = TextInputType.text,
       this.linesCount = 1,
       required this.validate,
-      required this.textController});
+      required this.textController,
+      required this.lastIcon});
 
   final String hintText;
   final bool obscureText;
@@ -18,6 +19,7 @@ class TextFormFieldWidget extends StatelessWidget {
   final linesCount;
   final FormFieldValidator validate;
   final TextEditingController textController;
+  final Widget lastIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +31,7 @@ class TextFormFieldWidget extends StatelessWidget {
         maxLines: linesCount,
         style: TextStyle(fontSize: 12.sp),
         decoration: InputDecoration(
-            suffixIcon: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.clear,
-                size: 20.r,
-              ),
-            ),
+            suffixIcon: lastIcon,
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.black12, fontSize: 10.sp),
             border: OutlineInputBorder(

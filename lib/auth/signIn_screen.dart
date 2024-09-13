@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final signInKey = GlobalKey<FormState>();
   late bool loading = false;
+  late bool textObscure = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -36,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
   void signInUser(context) {
     if (signInKey.currentState!.validate()) {
       setState(() {
-        loading = true;
+        loading = !loading;
       });
       auth
           .signInWithEmailAndPassword(
@@ -45,15 +47,17 @@ class _SignInScreenState extends State<SignInScreen> {
           .then((value) {
         Toasts().success('User Signed In Successfully');
         setState(() {
-          loading = false;
+          loading = !loading;
         });
+        emailController.clear();
+        passwordController.clear();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) {
           return const MainScreen();
         }));
       }).onError((error, value) {
         setState(() {
-          loading = false;
+          loading = !loading;
         });
         Toasts().fail(error.toString());
       });
@@ -72,6 +76,22 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                 children: [
                   TextFormFieldWidget(
+                    lastIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          textObscure = !textObscure;
+                        });
+                      },
+                      icon: textObscure
+                          ? Icon(
+                              CupertinoIcons.eye_solid,
+                              size: 20.r,
+                            )
+                          : Icon(
+                              CupertinoIcons.eye_slash_fill,
+                              size: 20.r,
+                            ),
+                    ),
                     textController: emailController,
                     validate: (email) {
                       if (email.isEmpty) {
@@ -85,6 +105,17 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   SizedBox(height: 20.h),
                   TextFormFieldWidget(
+                      lastIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            textObscure != textObscure;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.remove_red_eye_rounded,
+                          size: 20.r,
+                        ),
+                      ),
                       textController: passwordController,
                       validate: (password) {
                         if (password.isEmpty) {

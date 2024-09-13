@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final signUpKey = GlobalKey<FormState>();
   late bool loading = false;
+  late bool textObscure = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -34,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void signUpUser(context) {
     setState(() {
-      loading = true;
+      loading = !loading;
     });
     auth
         .createUserWithEmailAndPassword(
@@ -43,14 +45,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .then((value) {
       Toasts().success('Signed UP Successfully');
       setState(() {
-        loading = false;
+        loading = !loading;
       });
+      emailController.clear();
+      passwordController.clear();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return const SignInScreen();
       }));
     }).onError((error, value) {
       setState(() {
-        loading = false;
+        loading = !loading;
       });
       Toasts().fail(error.toString());
     });
@@ -68,6 +72,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 children: [
                   TextFormFieldWidget(
+                    lastIcon: IconButton(
+                      onPressed: () {
+                        emailController.clear();
+                      },
+                      icon: Icon(
+                        Icons.clear,
+                        size: 20.r,
+                      ),
+                    ),
                     textController: emailController,
                     validate: (email) {
                       if (email!.isEmpty) {
@@ -81,6 +94,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   SizedBox(height: 20.h),
                   TextFormFieldWidget(
+                      lastIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            textObscure = !textObscure;
+                          });
+                        },
+                        icon: textObscure
+                            ? Icon(
+                                CupertinoIcons.eye_solid,
+                                size: 20.r,
+                              )
+                            : Icon(
+                                CupertinoIcons.eye_slash_fill,
+                                size: 20.r,
+                              ),
+                      ),
                       textController: passwordController,
                       validate: (password) {
                         print('validator');
@@ -90,7 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                       hintText: 'Password',
-                      obscureText: true),
+                      obscureText: textObscure),
                   SizedBox(height: 30.h),
                   ElevatedButton(
                     onPressed: () {
