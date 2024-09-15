@@ -14,7 +14,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  bool checkboxBool = true;
   List<String> allToDo = [];
   bool loading = false;
 
@@ -96,7 +95,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
+          showBottomSheet(
             context: context,
             builder: (context) {
               return Padding(

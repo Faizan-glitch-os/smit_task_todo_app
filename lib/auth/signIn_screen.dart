@@ -78,19 +78,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   TextFormFieldWidget(
                     lastIcon: IconButton(
                       onPressed: () {
-                        setState(() {
-                          textObscure = !textObscure;
-                        });
+                        emailController.clear();
                       },
-                      icon: textObscure
-                          ? Icon(
-                              CupertinoIcons.eye_solid,
-                              size: 20.r,
-                            )
-                          : Icon(
-                              CupertinoIcons.eye_slash_fill,
-                              size: 20.r,
-                            ),
+                      icon: Icon(
+                        Icons.clear,
+                        size: 20.r,
+                      ),
                     ),
                     textController: emailController,
                     validate: (email) {
