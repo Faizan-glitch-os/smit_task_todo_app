@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smit_task_todo_app/auth/sign_in_screen.dart';
 import 'package:smit_task_todo_app/auth/user-auth_class.dart';
-import 'package:smit_task_todo_app/ui/main_screen.dart';
-import 'package:smit_task_todo_app/utils/flutter-toasts_package.dart';
+import 'package:smit_task_todo_app/utils/flutter_toasts_package.dart';
 
-import '../widgets/textFormField_widget.dart';
-import 'signUp_screen.dart';
+import '../widgets/text_clear_button_widget.dart';
+import '../widgets/text_form_field_widget.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  final signInKey = GlobalKey<FormState>();
+class _SignUpScreenState extends State<SignUpScreen> {
+  final signUpKey = GlobalKey<FormState>();
   late bool loading = false;
   late bool textObscure = false;
 
@@ -35,33 +35,30 @@ class _SignInScreenState extends State<SignInScreen> {
   //   });
   // }
 
-  void signInUser(context) {
-    if (signInKey.currentState!.validate()) {
+  void signUpUser(context) {
+    setState(() {
+      loading = !loading;
+    });
+    auth
+        .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim())
+        .then((value) {
+      Toasts().success('Signed UP Successfully');
       setState(() {
         loading = !loading;
       });
-      auth
-          .signInWithEmailAndPassword(
-              email: emailController.text.trim(),
-              password: passwordController.text.trim())
-          .then((value) {
-        Toasts().success('User Signed In Successfully');
-        setState(() {
-          loading = !loading;
-        });
-        emailController.clear();
-        passwordController.clear();
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) {
-          return const MainScreen();
-        }));
-      }).onError((error, value) {
-        setState(() {
-          loading = !loading;
-        });
-        Toasts().fail(error.toString());
+      emailController.clear();
+      passwordController.clear();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return const SignInScreen();
+      }));
+    }).onError((error, value) {
+      setState(() {
+        loading = !loading;
       });
-    }
+      Toasts().fail(error.toString());
+    });
   }
 
   @override
@@ -72,22 +69,15 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: signInKey,
+              key: signUpKey,
               child: Column(
                 children: [
                   TextFormFieldWidget(
-                    lastIcon: IconButton(
-                      onPressed: () {
-                        emailController.clear();
-                      },
-                      icon: Icon(
-                        Icons.clear,
-                        size: 20.r,
-                      ),
-                    ),
+                    lastIcon:
+                        TextClearButtonWidget(emailController: emailController),
                     textController: emailController,
                     validate: (email) {
-                      if (email.isEmpty) {
+                      if (email!.isEmpty) {
                         Toasts().fail('Please enter a valid Email');
                       }
                       return null;
@@ -101,38 +91,44 @@ class _SignInScreenState extends State<SignInScreen> {
                       lastIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            textObscure != textObscure;
+                            textObscure = !textObscure;
                           });
                         },
-                        icon: Icon(
-                          Icons.remove_red_eye_rounded,
-                          size: 20.r,
-                        ),
+                        icon: textObscure
+                            ? Icon(
+                                CupertinoIcons.eye_solid,
+                                size: 20.r,
+                              )
+                            : Icon(
+                                CupertinoIcons.eye_slash_fill,
+                                size: 20.r,
+                              ),
                       ),
                       textController: passwordController,
                       validate: (password) {
-                        if (password.isEmpty) {
-                          Toasts().fail('Please enter a valid Email');
+                        print('validator');
+                        if (password!.isEmpty) {
+                          Toasts().fail('Please enter Password');
                         }
                         return null;
                       },
                       hintText: 'Password',
-                      obscureText: true),
+                      obscureText: textObscure),
                   SizedBox(height: 30.h),
                   ElevatedButton(
                     onPressed: () {
-                      if (signInKey.currentState!.validate()) {
-                        // UserAuth().signInUser(isLoading, auth,
+                      if (signUpKey.currentState!.validate()) {
+                        // UserAuth().signUpUser(isLoading, auth,
                         //     emailController, passwordController, context);
+                        signUpUser(context);
                       }
-                      signInUser(context);
                     },
                     child: loading
                         ? const CircularProgressIndicator(
                             color: Colors.purple,
                           )
                         : Text(
-                            'Sign In',
+                            'Sign UP',
                             style: TextStyle(fontSize: 15.sp),
                           ),
                   ),
@@ -144,7 +140,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                                text: 'Don\'t have an account,',
+                                text: 'Already have an account,',
                                 style: TextStyle(
                                     fontSize: 12.sp, color: Colors.black)),
                             TextSpan(
@@ -154,16 +150,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const SignUpScreen()));
+                                                const SignInScreen()));
                                   },
-                                text: ' Sign Up now',
+                                text: ' Sign In now',
                                 style: TextStyle(
                                     fontSize: 12.sp, color: Colors.deepPurple)),
                           ],
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

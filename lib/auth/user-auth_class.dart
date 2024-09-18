@@ -2,8 +2,8 @@
 // import 'package:flutter/material.dart';
 //
 // import '../ui/main_screen.dart';
-// import '../utils/flutter-toasts_package.dart';
-// import 'signIn_screen.dart';
+// import '../utils/flutter_toasts_package.dart';
+// import 'sign_in_screen.dart';
 //
 // class UserAuth {
 //   void signInUser(

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smit_task_todo_app/auth/signIn_screen.dart';
-import 'package:smit_task_todo_app/utils/flutter-toasts_package.dart';
+import 'package:smit_task_todo_app/auth/sign_in_screen.dart';
+import 'package:smit_task_todo_app/utils/flutter_toasts_package.dart';
+import 'package:smit_task_todo_app/widgets/text_form_field_widget.dart';
+
+import '../widgets/add_new_to_do_widget.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -18,8 +21,6 @@ class _MainScreenState extends State<MainScreen> {
   bool loading = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
-
-  final TextEditingController newToDoController = TextEditingController();
 
   @override
   void initState() {
@@ -46,7 +47,6 @@ class _MainScreenState extends State<MainScreen> {
       });
     }
     saveToDo();
-    newToDoController.clear();
   }
 
   void removeToDo(int index) {
@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('To-do'),
+        title: const Text('To-do'),
         actions: [
           loading
               ? const CircularProgressIndicator(
@@ -90,80 +90,20 @@ class _MainScreenState extends State<MainScreen> {
                     Icons.logout_rounded,
                     size: 25.r,
                   ),
-                )
+                ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showBottomSheet(
+          print(auth.currentUser!.email);
+          showModalBottomSheet(
             context: context,
             builder: (context) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.r),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'New To-do',
-                          style: TextStyle(fontSize: 15.sp),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            newToDoController.clear();
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.close,
-                            size: 25.r,
-                          ),
-                        )
-                      ],
-                    ),
-                    TextField(
-                      controller: newToDoController,
-                      style: TextStyle(fontSize: 10.sp),
-                      maxLines: null,
-                      decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              newToDoController.clear();
-                            },
-                            icon: Icon(
-                              Icons.clear,
-                              size: 20.r,
-                            ),
-                          ),
-                          hintText: 'Add a new To-do',
-                          hintStyle:
-                              TextStyle(color: Colors.black12, fontSize: 10.sp),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                              borderSide: BorderSide.none),
-                          fillColor: Colors.black12,
-                          filled: true),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: TextButton(
-                        onPressed: () {
-                          if (newToDoController.text.isNotEmpty) {
-                            addNewToDo(newToDoController.text);
-                            newToDoController.clear();
-                            Navigator.pop(context);
-                          } else {}
-                        },
-                        child: Text('Save'),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return AddNewToDoWidget();
             },
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: allToDo.isNotEmpty
           ? ListView.builder(

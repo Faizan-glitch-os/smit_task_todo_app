@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:smit_task_todo_app/auth/signIn_screen.dart';
+import 'package:smit_task_todo_app/auth/sign_in_screen.dart';
 
-import 'auth/signUp_screen.dart';
+import 'auth/sign_up_screen.dart';
 import 'ui/splash_screen.dart';
 import 'ui/main_screen.dart';
 

@@ -4,28 +4,29 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smit_task_todo_app/auth/signIn_screen.dart';
 import 'package:smit_task_todo_app/auth/user-auth_class.dart';
-import 'package:smit_task_todo_app/utils/flutter-toasts_package.dart';
+import 'package:smit_task_todo_app/ui/main_screen.dart';
+import 'package:smit_task_todo_app/utils/flutter_toasts_package.dart';
+import 'package:smit_task_todo_app/widgets/text_clear_button_widget.dart';
 
-import '../widgets/textFormField_widget.dart';
+import '../widgets/text_form_field_widget.dart';
+import 'sign_up_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final signUpKey = GlobalKey<FormState>();
+class _SignInScreenState extends State<SignInScreen> {
+  final signInKey = GlobalKey<FormState>();
   late bool loading = false;
   late bool textObscure = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
   TextEditingController emailController = TextEditingController();
-
   TextEditingController passwordController = TextEditingController();
 
   // void isLoading() {
@@ -34,30 +35,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
   //   });
   // }
 
-  void signUpUser(context) {
-    setState(() {
-      loading = !loading;
-    });
-    auth
-        .createUserWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim())
-        .then((value) {
-      Toasts().success('Signed UP Successfully');
+  void signInUser(context) {
+    if (signInKey.currentState!.validate()) {
       setState(() {
         loading = !loading;
       });
-      emailController.clear();
-      passwordController.clear();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return const SignInScreen();
-      }));
-    }).onError((error, value) {
-      setState(() {
-        loading = !loading;
+      auth
+          .signInWithEmailAndPassword(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim())
+          .then((value) {
+        Toasts().success('User Signed In Successfully');
+        setState(() {
+          loading = !loading;
+        });
+        emailController.clear();
+        passwordController.clear();
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return const MainScreen();
+        }));
+      }).onError((error, value) {
+        setState(() {
+          loading = !loading;
+        });
+        Toasts().fail(error.toString());
       });
-      Toasts().fail(error.toString());
-    });
+    }
   }
 
   @override
@@ -68,22 +72,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: signUpKey,
+              key: signInKey,
               child: Column(
                 children: [
                   TextFormFieldWidget(
-                    lastIcon: IconButton(
-                      onPressed: () {
-                        emailController.clear();
-                      },
-                      icon: Icon(
-                        Icons.clear,
-                        size: 20.r,
-                      ),
-                    ),
+                    lastIcon:
+                        TextClearButtonWidget(emailController: emailController),
                     textController: emailController,
                     validate: (email) {
-                      if (email!.isEmpty) {
+                      if (email.isEmpty) {
                         Toasts().fail('Please enter a valid Email');
                       }
                       return null;
@@ -112,9 +109,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       textController: passwordController,
                       validate: (password) {
-                        print('validator');
-                        if (password!.isEmpty) {
-                          Toasts().fail('Please enter Password');
+                        if (password.isEmpty) {
+                          Toasts().fail('Please enter a valid Password');
                         }
                         return null;
                       },
@@ -123,18 +119,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(height: 30.h),
                   ElevatedButton(
                     onPressed: () {
-                      if (signUpKey.currentState!.validate()) {
-                        // UserAuth().signUpUser(isLoading, auth,
+                      if (signInKey.currentState!.validate()) {
+                        // UserAuth().signInUser(isLoading, auth,
                         //     emailController, passwordController, context);
-                        signUpUser(context);
                       }
+                      signInUser(context);
                     },
                     child: loading
                         ? const CircularProgressIndicator(
                             color: Colors.purple,
                           )
                         : Text(
-                            'Sign UP',
+                            'Sign IN',
                             style: TextStyle(fontSize: 15.sp),
                           ),
                   ),
@@ -146,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                                text: 'Already have an account,',
+                                text: 'Don\'t have an account,',
                                 style: TextStyle(
                                     fontSize: 12.sp, color: Colors.black)),
                             TextSpan(
@@ -156,16 +152,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const SignInScreen()));
+                                                const SignUpScreen()));
                                   },
-                                text: ' Sign In now',
+                                text: ' Sign Up now',
                                 style: TextStyle(
                                     fontSize: 12.sp, color: Colors.deepPurple)),
                           ],
                         ),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),
