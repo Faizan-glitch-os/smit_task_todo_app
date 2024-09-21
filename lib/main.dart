@@ -23,12 +23,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
+      ensureScreenSize: true,
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
       builder: (context, child) {
         return MaterialApp(
           home: MediaQuery(
               data: MediaQuery.of(context)
                   .copyWith(textScaler: TextScaler.noScaling),
-              child: auth.currentUser != null ? MainScreen() : SignUpScreen()),
+              child: auth.currentUser != null
+                  ? const MainScreen()
+                  : const SignUpScreen()),
         );
       },
     );
