@@ -120,10 +120,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (signInKey.currentState!.validate()) {
-                        // UserAuth().signInUser(isLoading, auth,
-                        //     emailController, passwordController, context);
+                        signInUser(context);
                       }
-                      signInUser(context);
                     },
                     child: loading
                         ? const CircularProgressIndicator(

@@ -118,8 +118,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (signUpKey.currentState!.validate()) {
-                        // UserAuth().signUpUser(isLoading, auth,
-                        //     emailController, passwordController, context);
                         signUpUser(context);
                       }
                     },

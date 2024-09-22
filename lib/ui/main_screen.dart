@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   bool loading = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
+  DatabaseReference db = FirebaseDatabase.instance.ref('smit-todo');
 
   @override
   void initState() {
@@ -98,52 +102,98 @@ class _MainScreenState extends State<MainScreen> {
           print(auth.currentUser!.email);
           showModalBottomSheet(
             context: context,
+            isScrollControlled: true,
             builder: (context) {
-              return AddNewToDoWidget();
+              return Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: AddNewToDoWidget(),
+              );
             },
           );
         },
         child: const Icon(Icons.add),
       ),
-      body: allToDo.isNotEmpty
-          ? ListView.builder(
-              itemCount: allToDo.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 5.h),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Colors.black12,
-                            borderRadius: BorderRadius.circular(10.r)),
-                        child: Row(
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  removeToDo(index);
-                                },
-                                icon: Icon(
-                                  Icons.close,
-                                  size: 20.r,
-                                )),
-                            Text(allToDo[index]),
-                          ],
-                        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FirebaseAnimatedList(
+                query: db,
+                itemBuilder: (context, snapshot, animations, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10).r,
+                    child: ListTile(
+                      tileColor: Colors.black12,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r)),
+                      titleTextStyle:
+                          TextStyle(fontSize: 20.sp, color: Colors.black54),
+                      subtitleTextStyle:
+                          TextStyle(fontSize: 15.sp, color: Colors.black26),
+                      title: Text(snapshot.child('title').value.toString()),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.all(10).r,
+                        child: Text(
+                            snapshot.child('description').value.toString()),
                       ),
-                    ],
-                  ),
-                );
-              })
-          : Center(
-              child: Text(
-                textAlign: TextAlign.center,
-                'No To-do added, kindly add one',
-                style: TextStyle(fontSize: 20.sp),
-              ),
-            ),
+                      trailing: IconButton(
+                          onPressed: () {
+                            db
+                                .child(snapshot.child('id').value.toString())
+                                .remove()
+                                .then((value) {
+                              Toasts().success('To-do deleted Successfully');
+                            });
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            size: 20.r,
+                          )),
+                    ),
+                  );
+                }),
+          ),
+        ],
+      ),
+      // body: allToDo.isNotEmpty
+      // ? ListView.builder(
+      //     itemCount: allToDo.length,
+      //     itemBuilder: (context, index) {
+      //       return Padding(
+      //         padding: EdgeInsets.symmetric(horizontal: 10.w),
+      //         child: Column(
+      //           children: [
+      //             Container(
+      //               margin: EdgeInsets.symmetric(vertical: 5.h),
+      //               width: double.infinity,
+      //               decoration: BoxDecoration(
+      //                   color: Colors.black12,
+      //                   borderRadius: BorderRadius.circular(10.r)),
+      //               child: Row(
+      //                 children: [
+      //                   IconButton(
+      //                       onPressed: () {
+      //                         removeToDo(index);
+      //                       },
+      //                       icon: Icon(
+      //                         Icons.close,
+      //                         size: 20.r,
+      //                       )),
+      //                   Text(allToDo[index]),
+      //                 ],
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       );
+      //     })
+      // : Center(
+      //     child: Text(
+      //       textAlign: TextAlign.center,
+      //       'No To-do added, kindly add one',
+      //       style: TextStyle(fontSize: 20.sp),
+      //     ),
+      //   ),
     );
   }
 }
