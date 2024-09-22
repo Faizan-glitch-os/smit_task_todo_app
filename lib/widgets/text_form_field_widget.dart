@@ -9,6 +9,7 @@ class TextFormFieldWidget extends StatelessWidget {
       this.obscureText = false,
       this.keyboardType = TextInputType.text,
       this.linesCount = 1,
+      // this.initialValue = '',
       required this.validate,
       required this.textController,
       required this.lastIcon});
@@ -20,10 +21,12 @@ class TextFormFieldWidget extends StatelessWidget {
   final FormFieldValidator validate;
   final TextEditingController textController;
   final Widget lastIcon;
+  // final String initialValue;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        // initialValue: initialValue,
         controller: textController,
         validator: validate,
         obscureText: obscureText,
