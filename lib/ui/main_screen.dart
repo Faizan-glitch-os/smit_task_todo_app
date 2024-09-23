@@ -24,13 +24,20 @@ class _MainScreenState extends State<MainScreen> {
   List<String> allToDo = [];
   bool loading = false;
 
+  late Query filteredToDo;
+  late Query filteredUser;
+
   FirebaseAuth auth = FirebaseAuth.instance;
-  DatabaseReference db = FirebaseDatabase.instance.ref('smit-todo');
+  DatabaseReference dbTodo = FirebaseDatabase.instance.ref('todo');
+  DatabaseReference dbUser = FirebaseDatabase.instance.ref('users');
 
   @override
   void initState() {
     super.initState();
     loadToDo();
+
+    filteredToDo = dbTodo.orderByChild('uid').equalTo(auth.currentUser!.uid);
+    filteredUser = dbUser.orderByChild('uid').equalTo(auth.currentUser!.uid);
   }
 
   Future<void> loadToDo() async {
@@ -81,7 +88,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('To-do'),
+        title: Text('Welcome'),
         actions: [
           loading
               ? const CircularProgressIndicator(
@@ -119,7 +126,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Expanded(
             child: FirebaseAnimatedList(
-                query: db,
+                query: filteredToDo,
                 itemBuilder: (context, snapshot, animations, index) {
                   return Padding(
                     padding: const EdgeInsets.all(10).r,
@@ -168,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       trailing: IconButton(
                           onPressed: () {
-                            db
+                            dbTodo
                                 .child(snapshot.child('id').value.toString())
                                 .remove()
                                 .then((value) {

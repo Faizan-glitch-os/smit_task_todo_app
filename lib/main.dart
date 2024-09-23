@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
                   .copyWith(textScaler: TextScaler.noScaling),
               child: auth.currentUser != null
                   ? const MainScreen()
-                  : const SignInScreen()),
+                  : const SignUpScreen()),
         );
       },
     );

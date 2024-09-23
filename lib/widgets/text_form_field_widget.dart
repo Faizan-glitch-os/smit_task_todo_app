@@ -9,6 +9,7 @@ class TextFormFieldWidget extends StatelessWidget {
       this.obscureText = false,
       this.keyboardType = TextInputType.text,
       this.linesCount = 1,
+      this.fieldText = '',
       // this.initialValue = '',
       required this.validate,
       required this.textController,
@@ -21,6 +22,7 @@ class TextFormFieldWidget extends StatelessWidget {
   final FormFieldValidator validate;
   final TextEditingController textController;
   final Widget lastIcon;
+  final String fieldText;
   // final String initialValue;
 
   @override
@@ -34,6 +36,10 @@ class TextFormFieldWidget extends StatelessWidget {
         maxLines: linesCount,
         style: TextStyle(fontSize: 12.sp),
         decoration: InputDecoration(
+            labelText: fieldText,
+            labelStyle: TextStyle(
+                fontSize: 15.sp,
+                color: Colors.deepPurpleAccent.withOpacity(.7)),
             suffixIcon: lastIcon,
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.black12, fontSize: 10.sp),

@@ -60,10 +60,15 @@ class _UpdateToDoWidgetState extends State<UpdateToDoWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     editToDoTitleController.text = widget.title;
     editToDoDescriptionController.text = widget.description;
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20).r,
       child: Column(
@@ -104,7 +109,7 @@ class _UpdateToDoWidgetState extends State<UpdateToDoWidget> {
                   },
                   textController: editToDoTitleController,
                   lastIcon: TextClearButtonWidget(
-                      emailController: editToDoTitleController),
+                      textController: editToDoTitleController),
                 ),
                 SizedBox(height: 10.h),
                 TextFormFieldWidget(
@@ -118,7 +123,7 @@ class _UpdateToDoWidgetState extends State<UpdateToDoWidget> {
                   },
                   textController: editToDoDescriptionController,
                   lastIcon: TextClearButtonWidget(
-                      emailController: editToDoDescriptionController),
+                      textController: editToDoDescriptionController),
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
@@ -133,7 +138,7 @@ class _UpdateToDoWidgetState extends State<UpdateToDoWidget> {
                             color: Colors.purple,
                           )
                         : Text(
-                            'Save',
+                            'Edit',
                             style: TextStyle(fontSize: 15.sp),
                           ),
                   ),

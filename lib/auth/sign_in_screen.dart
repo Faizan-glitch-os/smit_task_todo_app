@@ -76,8 +76,9 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                 children: [
                   TextFormFieldWidget(
+                    fieldText: 'Email',
                     lastIcon:
-                        TextClearButtonWidget(emailController: emailController),
+                        TextClearButtonWidget(textController: emailController),
                     textController: emailController,
                     validate: (email) {
                       if (email.isEmpty) {
@@ -85,12 +86,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       }
                       return null;
                     },
-                    hintText: 'Email e.g Pakistan@gmail.com',
+                    hintText: 'Pakistan@gmail.com',
                     keyboardType: TextInputType.emailAddress,
                     linesCount: null,
                   ),
                   SizedBox(height: 20.h),
                   TextFormFieldWidget(
+                      fieldText: 'Password',
                       lastIcon: IconButton(
                         onPressed: () {
                           setState(() {
@@ -146,7 +148,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             TextSpan(
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>

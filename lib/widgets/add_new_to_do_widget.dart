@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,6 +27,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
       TextEditingController();
 
   DatabaseReference db = FirebaseDatabase.instance.ref('smit-todo');
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   void addNewToDo() {
     setState(() {
@@ -34,6 +36,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
 
     String id = DateTime.now().millisecondsSinceEpoch.toString();
     db.child(id).set({
+      'uid': auth.currentUser!.uid,
       'id': id,
       'title': newToDoTitleController.text.toString().trim(),
       'description': newToDoDescriptionController.text.toString().trim(),
@@ -97,7 +100,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                   },
                   textController: newToDoTitleController,
                   lastIcon: TextClearButtonWidget(
-                      emailController: newToDoTitleController),
+                      textController: newToDoTitleController),
                 ),
                 SizedBox(height: 10.h),
                 TextFormFieldWidget(
@@ -111,7 +114,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                   },
                   textController: newToDoDescriptionController,
                   lastIcon: TextClearButtonWidget(
-                      emailController: newToDoDescriptionController),
+                      textController: newToDoDescriptionController),
                 ),
                 Align(
                   alignment: Alignment.bottomRight,

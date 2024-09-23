@@ -5,16 +5,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TextClearButtonWidget extends StatelessWidget {
   const TextClearButtonWidget({
     super.key,
-    required this.emailController,
+    required this.textController,
   });
 
-  final TextEditingController emailController;
+  final TextEditingController textController;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        emailController.clear();
+        textController.clear();
       },
       icon: Icon(
         Icons.clear,

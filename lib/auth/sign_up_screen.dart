@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +25,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late bool textObscure = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
+  DatabaseReference dbTodo = FirebaseDatabase.instance.ref('smit-todo');
+  DatabaseReference dbUsers = FirebaseDatabase.instance.ref('users');
 
   TextEditingController emailController = TextEditingController();
-
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   // void isLoading() {
   //   setState(() {
@@ -44,12 +47,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
             email: emailController.text.trim(),
             password: passwordController.text.trim())
         .then((value) {
+      String id = DateTime.now().millisecondsSinceEpoch.toString();
+      dbUsers.child(id).set({
+        'uid': auth.currentUser!.uid,
+        'id': id,
+        'name': nameController.text.toString().trim(),
+        'email': emailController.text.toString(),
+      });
       Toasts().success('Signed UP Successfully');
       setState(() {
         loading = !loading;
       });
       emailController.clear();
       passwordController.clear();
+      nameController.clear();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return const SignInScreen();
       }));
@@ -73,8 +84,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 children: [
                   TextFormFieldWidget(
+                    fieldText: 'Name',
                     lastIcon:
-                        TextClearButtonWidget(emailController: emailController),
+                        TextClearButtonWidget(textController: nameController),
+                    textController: nameController,
+                    validate: (name) {
+                      if (name!.isEmpty) {
+                        Toasts().fail('Please enter a valid Name');
+                      }
+                      return null;
+                    },
+                    hintText: 'Muhammad Ali',
+                    keyboardType: TextInputType.text,
+                    linesCount: null,
+                  ),
+                  SizedBox(height: 20.h),
+                  TextFormFieldWidget(
+                    fieldText: 'Email',
+                    lastIcon:
+                        TextClearButtonWidget(textController: emailController),
                     textController: emailController,
                     validate: (email) {
                       if (email!.isEmpty) {
@@ -82,12 +110,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                       return null;
                     },
-                    hintText: 'Email e.g Pakistan@gmail.com',
+                    hintText: 'Pakistan@gmail.com',
                     keyboardType: TextInputType.emailAddress,
                     linesCount: null,
                   ),
                   SizedBox(height: 20.h),
                   TextFormFieldWidget(
+                      fieldText: 'Password',
                       lastIcon: IconButton(
                         onPressed: () {
                           setState(() {
@@ -106,7 +135,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       textController: passwordController,
                       validate: (password) {
-                        print('validator');
                         if (password!.isEmpty) {
                           Toasts().fail('Please enter Password');
                         }
