@@ -11,6 +11,7 @@ class TextFormFieldWidget extends StatelessWidget {
       this.linesCount = 1,
       this.fieldText = '',
       // this.initialValue = '',
+      this.onChange,
       required this.validate,
       required this.textController,
       required this.lastIcon});
@@ -23,12 +24,18 @@ class TextFormFieldWidget extends StatelessWidget {
   final TextEditingController textController;
   final Widget lastIcon;
   final String fieldText;
+  final Function(String)? onChange;
   // final String initialValue;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
         // initialValue: initialValue,
+        onChanged: (value) {
+          if (onChange != null) {
+            onChange!(value);
+          }
+        },
         controller: textController,
         validator: validate,
         obscureText: obscureText,

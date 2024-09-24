@@ -26,7 +26,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
   final TextEditingController newToDoDescriptionController =
       TextEditingController();
 
-  DatabaseReference db = FirebaseDatabase.instance.ref('smit-todo');
+  DatabaseReference db = FirebaseDatabase.instance.ref('todo');
   FirebaseAuth auth = FirebaseAuth.instance;
 
   void addNewToDo() {
@@ -91,6 +91,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
             child: Column(
               children: [
                 TextFormFieldWidget(
+                  fieldText: 'Title',
                   hintText: 'Enter Title',
                   validate: (title) {
                     if (title!.isEmpty) {
@@ -104,6 +105,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                 ),
                 SizedBox(height: 10.h),
                 TextFormFieldWidget(
+                  fieldText: 'Description',
                   linesCount: 5,
                   hintText: 'Enter Description',
                   validate: (description) {

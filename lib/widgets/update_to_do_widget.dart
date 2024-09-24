@@ -31,7 +31,7 @@ class _UpdateToDoWidgetState extends State<UpdateToDoWidget> {
   final TextEditingController editToDoDescriptionController =
       TextEditingController();
 
-  DatabaseReference db = FirebaseDatabase.instance.ref('smit-todo');
+  DatabaseReference db = FirebaseDatabase.instance.ref('todo');
 
   void editToDo() {
     setState(() {

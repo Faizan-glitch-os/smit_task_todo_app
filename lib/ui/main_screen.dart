@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smit_task_todo_app/auth/sign_in_screen.dart';
 import 'package:smit_task_todo_app/utils/flutter_toasts_package.dart';
+import 'package:smit_task_todo_app/widgets/text_clear_button_widget.dart';
 import 'package:smit_task_todo_app/widgets/text_form_field_widget.dart';
 import 'package:smit_task_todo_app/widgets/update_to_do_widget.dart';
 
@@ -30,6 +31,8 @@ class _MainScreenState extends State<MainScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   DatabaseReference dbTodo = FirebaseDatabase.instance.ref('todo');
   DatabaseReference dbUser = FirebaseDatabase.instance.ref('users');
+
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -90,6 +93,22 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text('Welcome'),
         actions: [
+          SizedBox(
+            height: 40.h,
+            width: 200.w,
+            child: TextFormFieldWidget(
+                onChange: (value) {
+                  setState(() {});
+                },
+                fieldText: 'Search',
+                hintText: 'search',
+                validate: (search) {
+                  return null;
+                },
+                textController: searchController,
+                lastIcon:
+                    TextClearButtonWidget(textController: searchController)),
+          ),
           loading
               ? const CircularProgressIndicator(
                   color: Colors.deepPurple,
@@ -128,52 +147,60 @@ class _MainScreenState extends State<MainScreen> {
             child: FirebaseAnimatedList(
                 query: filteredToDo,
                 itemBuilder: (context, snapshot, animations, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10).r,
-                    child: ListTile(
-                      tileColor: Colors.black12,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.r)),
-                      titleTextStyle:
-                          TextStyle(fontSize: 20.sp, color: Colors.black54),
-                      subtitleTextStyle:
-                          TextStyle(fontSize: 15.sp, color: Colors.black26),
-                      leading: IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (context) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    child: UpdateToDoWidget(
-                                      id: snapshot.child('id').value.toString(),
-                                      title: snapshot
-                                          .child('title')
-                                          .value
-                                          .toString(),
-                                      description: snapshot
-                                          .child('description')
-                                          .value
-                                          .toString(),
-                                    ),
-                                  );
-                                });
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                            size: 20.r,
-                          )),
-                      title: Text(snapshot.child('title').value.toString()),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.all(10).r,
-                        child: Text(
-                            snapshot.child('description').value.toString()),
-                      ),
-                      trailing: IconButton(
+                  if (snapshot
+                      .child('title')
+                      .value
+                      .toString()
+                      .contains(searchController.text.toString())) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10).r,
+                      child: ListTile(
+                        tileColor: Colors.black12,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        titleTextStyle:
+                            TextStyle(fontSize: 20.sp, color: Colors.black54),
+                        subtitleTextStyle:
+                            TextStyle(fontSize: 15.sp, color: Colors.black26),
+                        leading: IconButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      child: UpdateToDoWidget(
+                                        id: snapshot
+                                            .child('id')
+                                            .value
+                                            .toString(),
+                                        title: snapshot
+                                            .child('title')
+                                            .value
+                                            .toString(),
+                                        description: snapshot
+                                            .child('description')
+                                            .value
+                                            .toString(),
+                                      ),
+                                    );
+                                  });
+                            },
+                            icon: Icon(
+                              Icons.edit,
+                              size: 20.r,
+                            )),
+                        title: Text(snapshot.child('title').value.toString()),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.all(10).r,
+                          child: Text(
+                              snapshot.child('description').value.toString()),
+                        ),
+                        trailing: IconButton(
                           onPressed: () {
                             dbTodo
                                 .child(snapshot.child('id').value.toString())
@@ -185,9 +212,78 @@ class _MainScreenState extends State<MainScreen> {
                           icon: Icon(
                             Icons.clear,
                             size: 20.r,
-                          )),
-                    ),
-                  );
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (searchController.text.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10).r,
+                      child: ListTile(
+                        tileColor: Colors.black12,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r)),
+                        titleTextStyle:
+                            TextStyle(fontSize: 20.sp, color: Colors.black54),
+                        subtitleTextStyle:
+                            TextStyle(fontSize: 15.sp, color: Colors.black26),
+                        leading: IconButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      child: UpdateToDoWidget(
+                                        id: snapshot
+                                            .child('id')
+                                            .value
+                                            .toString(),
+                                        title: snapshot
+                                            .child('title')
+                                            .value
+                                            .toString(),
+                                        description: snapshot
+                                            .child('description')
+                                            .value
+                                            .toString(),
+                                      ),
+                                    );
+                                  });
+                            },
+                            icon: Icon(
+                              Icons.edit,
+                              size: 20.r,
+                            )),
+                        title: Text(snapshot.child('title').value.toString()),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.all(10).r,
+                          child: Text(
+                              snapshot.child('description').value.toString()),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            dbTodo
+                                .child(snapshot.child('id').value.toString())
+                                .remove()
+                                .then((value) {
+                              Toasts().success('To-do deleted Successfully');
+                            });
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            size: 20.r,
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
                 }),
           ),
         ],
