@@ -25,7 +25,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late bool textObscure = false;
 
   FirebaseAuth auth = FirebaseAuth.instance;
-  DatabaseReference dbTodo = FirebaseDatabase.instance.ref('smit-todo');
   DatabaseReference dbUsers = FirebaseDatabase.instance.ref('users');
 
   TextEditingController emailController = TextEditingController();
@@ -47,10 +46,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             email: emailController.text.trim(),
             password: passwordController.text.trim())
         .then((value) {
-      String id = DateTime.now().millisecondsSinceEpoch.toString();
-      dbUsers.child(id).set({
+      dbUsers.child(auth.currentUser!.uid).set({
         'uid': auth.currentUser!.uid,
-        'id': id,
         'name': nameController.text.toString().trim(),
         'email': emailController.text.toString(),
       });

@@ -26,21 +26,27 @@ class _MainScreenState extends State<MainScreen> {
   bool loading = false;
 
   late Query filteredToDo;
-  late Query filteredUser;
 
   FirebaseAuth auth = FirebaseAuth.instance;
   DatabaseReference dbTodo = FirebaseDatabase.instance.ref('todo');
   DatabaseReference dbUser = FirebaseDatabase.instance.ref('users');
 
   TextEditingController searchController = TextEditingController();
+  late String userName = '';
 
   @override
   void initState() {
     super.initState();
     loadToDo();
-
+    getName();
     filteredToDo = dbTodo.orderByChild('uid').equalTo(auth.currentUser!.uid);
-    filteredUser = dbUser.orderByChild('uid').equalTo(auth.currentUser!.uid);
+  }
+
+  void getName() async {
+    var snapshot =
+        await dbUser.child(FirebaseAuth.instance.currentUser!.uid).get();
+    print(snapshot.child('name').value.toString());
+    userName = snapshot.child('name').value.toString();
   }
 
   Future<void> loadToDo() async {
@@ -91,7 +97,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: Text(
+          userName,
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           SizedBox(
             height: 40.h,
