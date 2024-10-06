@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -50,19 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB7W4-8maXmtKA0nlm_Ra2zKuCuMLHbqXc',
-    appId: '1:975169574140:android:f3e97da34b463a42d03379',
-    messagingSenderId: '975169574140',
-    projectId: 'smit-todo-eb644',
-    storageBucket: 'smit-todo-eb644.appspot.com',
+    apiKey: 'AIzaSyCwWnUJXiV5IDj9z9Kr9ZV0KFnAq7Rfgvw',
+    appId: '1:344993910153:android:a9b1869fbdeada4deae558',
+    messagingSenderId: '344993910153',
+    projectId: 'smit-todo-app',
+    storageBucket: 'smit-todo-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC6CCcswNJChZiiTrTBtFuh3E9r1Xmo98U',
-    appId: '1:975169574140:ios:024ea92deb93873bd03379',
-    messagingSenderId: '975169574140',
-    projectId: 'smit-todo-eb644',
-    storageBucket: 'smit-todo-eb644.appspot.com',
+    apiKey: 'AIzaSyCfIoBe4967ywslrp57rzC8VRjzPJK7k_Q',
+    appId: '1:344993910153:ios:8961082a4ab6465aeae558',
+    messagingSenderId: '344993910153',
+    projectId: 'smit-todo-app',
+    storageBucket: 'smit-todo-app.appspot.com',
     iosBundleId: 'com.example.smitTaskTodoApp',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDweTJ8aQs2sqMYD_aSyxd4WRjfuSqUajc',
+    appId: '1:344993910153:web:2c27de74ca3b1a02eae558',
+    messagingSenderId: '344993910153',
+    projectId: 'smit-todo-app',
+    authDomain: 'smit-todo-app.firebaseapp.com',
+    storageBucket: 'smit-todo-app.appspot.com',
+  );
+
 }

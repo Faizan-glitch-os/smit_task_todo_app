@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   List<String> allToDo = [];
   bool loading = false;
 
-  late Query filteredToDo;
+  // late Query filteredToDo;
 
   FirebaseAuth auth = FirebaseAuth.instance;
   DatabaseReference dbTodo = FirebaseDatabase.instance.ref('todo');
@@ -39,13 +39,13 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     loadToDo();
     getName();
-    filteredToDo = dbTodo.orderByChild('uid').equalTo(auth.currentUser!.uid);
+    // filteredToDo = dbTodo.orderByChild('uid').equalTo(auth.currentUser!.uid);
   }
 
   void getName() async {
-    var snapshot =
-        await dbUser.child(FirebaseAuth.instance.currentUser!.uid).get();
+    DataSnapshot snapshot = await dbUser.child(auth.currentUser!.uid).get();
     print(snapshot.child('name').value.toString());
+
     userName = snapshot.child('name').value.toString();
   }
 
@@ -84,9 +84,14 @@ class _MainScreenState extends State<MainScreen> {
     auth.signOut().then((value) {
       Toasts().success('Signed Out Successfully');
       loading != loading;
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return const SignInScreen();
-      }));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const SignInScreen();
+          },
+        ),
+      );
     }).onError((error, value) {
       loading = false;
       Toasts().fail(error.toString());
@@ -98,8 +103,8 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          userName,
-          style: TextStyle(color: Colors.black),
+          auth.currentUser != null ? userName : 'Welcome',
+          style: const TextStyle(color: Colors.black),
         ),
         actions: [
           SizedBox(
@@ -135,7 +140,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(auth.currentUser!.email);
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -154,7 +158,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Expanded(
             child: FirebaseAnimatedList(
-                query: filteredToDo,
+                query: dbTodo,
                 itemBuilder: (context, snapshot, animations, index) {
                   if (snapshot
                       .child('title')

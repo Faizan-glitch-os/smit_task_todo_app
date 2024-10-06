@@ -10,7 +10,7 @@ import 'package:smit_task_todo_app/widgets/text_clear_button_widget.dart';
 import 'package:smit_task_todo_app/widgets/text_form_field_widget.dart';
 
 class AddNewToDoWidget extends StatefulWidget {
-  AddNewToDoWidget({
+  const AddNewToDoWidget({
     super.key,
   });
 
@@ -27,6 +27,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
       TextEditingController();
 
   DatabaseReference db = FirebaseDatabase.instance.ref('todo');
+
   FirebaseAuth auth = FirebaseAuth.instance;
 
   void addNewToDo() {
@@ -38,8 +39,8 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
     db.child(id).set({
       'uid': auth.currentUser!.uid,
       'id': id,
-      'title': newToDoTitleController.text.toString().trim(),
-      'description': newToDoDescriptionController.text.toString().trim(),
+      'title': newToDoTitleController.text.trim().toString(),
+      'description': newToDoDescriptionController.text.trim().toString(),
     }).then((value) {
       setState(() {
         addingData = !addingData;
@@ -94,7 +95,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                   fieldText: 'Title',
                   hintText: 'Enter Title',
                   validate: (title) {
-                    if (title!.isEmpty) {
+                    if (title.isEmpty || title == null) {
                       Toasts().fail('Please enter a Title');
                     }
                     return null;
@@ -109,7 +110,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                   linesCount: 5,
                   hintText: 'Enter Description',
                   validate: (description) {
-                    if (description!.isEmpty) {
+                    if (description.isEmpty || description == null) {
                       Toasts().fail('Please enter Description');
                     }
                     return null;
