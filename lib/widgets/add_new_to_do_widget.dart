@@ -62,7 +62,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20).r,
+      padding: const EdgeInsets.symmetric(horizontal: 20).r,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -96,7 +96,7 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                   hintText: 'Enter Title',
                   validate: (title) {
                     if (title.isEmpty || title == null) {
-                      Toasts().fail('Please enter a Title');
+                      return 'Please enter a Title';
                     }
                     return null;
                   },
@@ -110,8 +110,8 @@ class _AddNewToDoWidgetState extends State<AddNewToDoWidget> {
                   linesCount: 5,
                   hintText: 'Enter Description',
                   validate: (description) {
-                    if (description.isEmpty || description == null) {
-                      Toasts().fail('Please enter Description');
+                    if (description.isEmpty) {
+                      return 'Please enter Description';
                     }
                     return null;
                   },

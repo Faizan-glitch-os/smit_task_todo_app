@@ -147,7 +147,7 @@ class _MainScreenState extends State<MainScreen> {
               return Padding(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: AddNewToDoWidget(),
+                child: const AddNewToDoWidget(),
               );
             },
           );
